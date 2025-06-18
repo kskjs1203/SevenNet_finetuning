@@ -1,0 +1,14 @@
+    continue: 
+        checkpoint: 'SevenNet_0.pth'
+        reset_optimizer: True
+        reset_scheduler: True
+        use_statistic_values_of_checkpoint: True
+        opt_params: '../estimate_Fisher/opt_params_sevenn.pt'
+        fisher_information: '../estimate_Fisher/fisher_sevenn.pt'
+        ewc_lambda: 100000
+
+data:
+    rehearsal: True
+    load_memory_path: 'replay.sevenn_data'
+    mem_batch_size: 8
+    mem_ratio: 1

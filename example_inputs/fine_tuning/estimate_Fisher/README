@@ -1,0 +1,15 @@
+input.yaml
+
+    continue:
+        use_statistic_values_of_checkpoint: True
+        checkpoint:  'SevenNet-0.pth'
+        calc_fisher: True
+        loss_threshold: 0.000726  # Only calculate importance value of structures that have smaller error than this loss threshold.
+
+    load_dataset_path: 'data_for_Fisher.sevenn_data' # Fisher information will be calculated with this set (training set).
+
+
+The given fisher information was calculated under 
+
+    train_shift_scale: True                     # Enable training for shift & scale. Useful if the dataset is augmented
+    train_denominator: True                    # Enable training for avg_num_neigh. Useful if the dataset is augmented

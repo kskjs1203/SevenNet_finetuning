@@ -1,0 +1,288 @@
+SevenNet: Scalable EquVariance-Enabled Neural Network
+sevenn version 0.9.5.dev0
+reading yaml config...
+                ****
+              ********                                   .
+              *//////,  ..                               .            ,*.
+               ,,***.         ..                        ,          ********.                                  ./,
+             .      .                ..   /////.       .,       . */////////                               /////////.
+        .&@&/        .                  .(((((((..     /           *//////*.  ...                         *((((((((((.
+     @@@@@@@@@@*    @@@@@@@@@@  @@@@@    *((@@@@@     (     %@@@@@@@@@@  .@@@@@@     ..@@@@.   @@@@@@*    .(@@@@@(((*
+    @@@@@.          @@@@         @@@@@ .   @@@@@      #     %@@@@         @@@@@@@@     @@@@(,  @@@@@@@@.    @@@@@(*.
+    %@@@@@@@&       @@@@@@@@@@    @@@@@   @@@@@      #  ., .%@@@@@@@@@    @@@@@@@@@@   @@@@,   @@@@@@@@@@   @@@@@
+    ,(%@@@@@@@@@    @@@@@@@@@@     @@@@@ @@@@&       (//////%@@@@@@@@@    @@@@  @@@@@@ @@@@  . @@@@@  @@@@@.@@@@@
+        .   @@@@@   @@@@ .       .  @@@@@@@@%   . . ( .////,%@@@@         @@@@    @@@@@@@@@    @@@@@    @@@@@@@@@
+    (@@@@@@@@@@@    @@@@@@@@@@**.    @@@@@@*       *.      .%@@@@@@@@@@   @@@@    . @@@@@@@    @@@@@     .@@@@@@@
+     @@@@@@@@@.     @@@@@@@@@@///,    @@@@.      . /        %@@@@@@@@@@   @@@@***,    @@@@@    @@@@@        @@@@@
+           .           //////////*.               /           .            .*******...             . ,.
+          .&&&&&...     ,//////*.       ...////.  /            ,*/.     .   ,////,               .,/////
+          &@@@@@@                         ,(/((, *           ,((((((.                              .***.
+           ,/@(,                            ..   *            ,((((*
+                                                ,
+                                               .
+Compute Fisher information from model and training set. No actual training will be performed. Ignore reheasal if it was True
+successfully read yaml config!
+
+from model configuration
+chemical_species    : auto
+_number_of_species  : auto
+_type_map           : auto
+irreps_manual       : ['128x0e', '128x0e+64x1e+32x2e', '128x0e+64x1e+32x2e', '128x0e+64x1e+32x2e', '128x0e+64x1e+32x2e', \
+                       '128x0e']
+channel             : 128
+lmax                : 2
+lmax_edge           : -1
+lmax_node           : -1
+is_parity           : False
+radial_basis        : {'radial_basis_name': 'bessel', 'bessel_basis_num': 8}
+cutoff_function     : {'cutoff_function_name': 'XPLOR', 'cutoff_on': 4.5}
+act_radial          : silu
+cutoff              : 5.0
+weight_nn_hidden_neurons: [64, 64]
+num_convolution_layer: 5
+conv_denominator    : avg_num_neigh
+train_denominator   : True
+train_shift_scale   : True
+use_bias_in_linear  : False
+readout_as_fcn      : False
+readout_fcn_hidden_neurons: [30, 30]
+readout_fcn_activation: relu
+self_connection_type: linear
+interaction_type    : nequip
+act_scalar          : {'e': 'silu', 'o': 'tanh'}
+act_gate            : {'e': 'silu', 'o': 'tanh'}
+correlation         : 3
+_normalize_sph      : True
+_conv_kwargs        : {}
+_custom_interaction_block_callback: {}
+
+from train configuration
+device              : cuda
+random_seed         : 1
+epoch               : 600
+loss                : Huber
+loss_param          : {'delta': 0.01}
+optimizer           : adam
+optim_param         : {'lr': 0.01}
+scheduler           : linearlr
+scheduler_param     : {'start_factor': 1.0, 'total_iters': 600, 'end_factor': 0.0001}
+force_loss_weight   : 1.0
+stress_loss_weight  : 0.01
+per_epoch           : 10
+use_testset         : False
+continue            : {'use_statistic_values_of_checkpoint': True, 'checkpoint': 'SevenNet_0.pth', \
+                       'reset_optimizer': True, 'reset_scheduler': True, 'calc_fisher': True, 'reset_epoch': False, \
+                       'opt_params': False, 'fisher_information': False, 'ewc_lambda': 0, 'loss_threshold': -1}
+csv_log             : log.csv
+_num_workers        : 0
+_is_trace_stress    : False
+is_train_stress     : True
+train_shuffle       : False
+error_record        : [['Energy', 'RMSE'], ['Force', 'RMSE'], ['Stress', 'RMSE'], ['Energy', 'MAE'], ['Force', 'MAE'], ['Stress', 'MAE'], \
+                       ['Energy', 'Loss'], ['Force', 'Loss'], ['Stress', 'Loss'], ['TotalLoss', 'None']]
+best_metric         : TotalLoss
+is_ddp              : False
+local_rank          : 0
+rank                : 0
+world_size          : 1
+
+from data configuration
+load_dataset_path   : ['data_for_Fisher.sevenn_data']
+load_validset_path  : ['data_for_Fisher.sevenn_data']
+load_memory_path    : False
+dtype               : single
+data_format         : ase
+data_format_args    : {}
+save_dataset_path   : False
+save_by_label       : False
+save_by_train_valid : False
+data_divide_ratio   : 0.1
+batch_size          : 1
+preprocess_num_cores: 1
+shift               : per_atom_energy_mean
+scale               : 1.73
+standardize_radial_embedding: False
+data_shuffle        : False
+rehearsal           : False
+mem_batch_size      : 0
+mem_ratio           : 1
+
+Continue found, loading checkpoint
+Checkpoint config is compatible
+Previous(checkpoint) epoch is: 600
+epoch start from 601
+log.csv file not found, new csv file will be created
+Checkpoint loading successful
+
+Initializing dataset...
+Loading data_for_Fisher.sevenn_data
+loaded dataset size is: {'/data2/team_finetuning/argyrodite_ft/train_Li_filtered': 3749}
+data set loading time: 0:00:02.19
+Ignore chemical species in yaml, use checkpoint
+Loading validset from load_validset
+Loading data_for_Fisher.sevenn_data
+loaded dataset size is: {'/data2/team_finetuning/argyrodite_ft/train_Li_filtered': 3749}
+data set loading time: 0:00:01.96
+the validset loaded, load_dataset is now train_set
+the ratio will be ignored
+
+Loaded trainset size: {'/data2/team_finetuning/argyrodite_ft/train_Li_filtered': 3749}
+
+Loaded validset size: {'/data2/team_finetuning/argyrodite_ft/train_Li_filtered': 3749}
+Dataset initialization successful
+
+Number of atoms in the train_set:
+/data2/team_finetuning/argyrodite_ft/train_Li_filtered: {'Ba': 427, 'Li': 24583, 'Si': 2553, 'C': 624, 'Cl': 1528, 'O': 70032, \
+                       'Sn': 1031, 'B': 3387, 'W': 1029, 'N': 2694, 'Sb': 924, 'P': 8320, 'Br': 561, 'Nd': 376, 'S': 6240, \
+                       'Bi': 1391, 'Zn': 812, 'Mg': 2768, 'Sc': 204, 'F': 5342, 'Ti': 1601, 'K': 926, 'Dy': 130, 'Mo': 1255, \
+                       'Gd': 132, 'Na': 932, 'Ga': 382, 'Er': 115, 'Al': 819, 'Rb': 522, 'Cs': 626, 'Tl': 48, 'Ta': 530, 'Hf': 86, \
+                       'Nb': 834, 'In': 227, 'Se': 135, 'Ca': 342, 'Ge': 612, 'Cd': 59, 'Sr': 512, 'Rh': 1, 'Tb': 121, 'Ho': 133, \
+                       'Te': 345, 'La': 545, 'Be': 190, 'I': 408, 'Y': 289, 'Ag': 59, 'Pr': 170, 'Zr': 326, 'Pt': 6, 'Sm': 100, \
+                       'As': 187, 'Xe': 18, 'Lu': 102, 'Re': 24, 'U': 73, 'Yb': 12, 'Au': 15, 'Tm': 87, 'Pb': 141, 'Th': 79, 'Pa': 2, \
+                       'Ir': 5, 'Ce': 48, 'Hg': 8}
+Total, label wise   : {'Ba': 427, 'Li': 24583, 'Si': 2553, 'C': 624, 'Cl': 1528, 'O': 70032, 'Sn': 1031, 'B': 3387, 'W': 1029, \
+                       'N': 2694, 'Sb': 924, 'P': 8320, 'Br': 561, 'Nd': 376, 'S': 6240, 'Bi': 1391, 'Zn': 812, 'Mg': 2768, \
+                       'Sc': 204, 'F': 5342, 'Ti': 1601, 'K': 926, 'Dy': 130, 'Mo': 1255, 'Gd': 132, 'Na': 932, 'Ga': 382, \
+                       'Er': 115, 'Al': 819, 'Rb': 522, 'Cs': 626, 'Tl': 48, 'Ta': 530, 'Hf': 86, 'Nb': 834, 'In': 227, 'Se': 135, \
+                       'Ca': 342, 'Ge': 612, 'Cd': 59, 'Sr': 512, 'Rh': 1, 'Tb': 121, 'Ho': 133, 'Te': 345, 'La': 545, 'Be': 190, \
+                       'I': 408, 'Y': 289, 'Ag': 59, 'Pr': 170, 'Zr': 326, 'Pt': 6, 'Sm': 100, 'As': 187, 'Xe': 18, 'Lu': 102, \
+                       'Re': 24, 'U': 73, 'Yb': 12, 'Au': 15, 'Tm': 87, 'Pb': 141, 'Th': 79, 'Pa': 2, 'Ir': 5, 'Ce': 48, 'Hg': 8}
+Total               : 149145
+------------------------------------------------------------------------------------------------------------------------
+Per atom energy(eV/atom) distribution:
+/data2/team_finetuning/argyrodite_ft/train_Li_filtered: {'mean': '-6.141', 'std': '1.307', 'median': '-6.472', \
+                       'max': '-1.592', 'min': '-10.458'}
+Total               : {'mean': '-6.141', 'std': '1.307', 'median': '-6.472', 'max': '-1.592', 'min': '-10.458'}
+------------------------------------------------------------------------------------------------------------------------
+Force(eV/Angstrom) distribution:
+/data2/team_finetuning/argyrodite_ft/train_Li_filtered: {'mean': '0.000', 'std': '0.065', 'median': '0.000', \
+                       'max': '5.264', 'min': '-4.316'}
+Total               : {'mean': '0.000', 'std': '0.065', 'median': '0.000', 'max': '5.264', 'min': '-4.316'}
+------------------------------------------------------------------------------------------------------------------------
+Stress(eV/Angstrom^3) distribution:
+/data2/team_finetuning/argyrodite_ft/train_Li_filtered: {'mean': '0.000', 'std': '0.009', 'median': '0.000', \
+                       'max': '0.547', 'min': '-0.114'}
+Total               : {'mean': '0.000', 'std': '0.009', 'median': '0.000', 'max': '0.547', 'min': '-0.114'}
+------------------------------------------------------------------------------------------------------------------------
+training_set size   : {'/data2/team_finetuning/argyrodite_ft/train_Li_filtered': 3749}
+validation_set size : {'/data2/team_finetuning/argyrodite_ft/train_Li_filtered': 3749}
+
+Initializing shift, scale, and denominator
+Average # of neighbors: 39.508948
+Overwrite shift, scale, conv_denominator from model checkpoint
+Overwrite scale to value(s) given in yaml
+Use element-wise shift, scale
+Ac                  : -5.062768, 1.730000
+Ag                  : -2.063425, 1.730000
+Al                  : -4.846841, 1.730000
+Ar                  : -0.062631, 1.730000
+As                  : -3.976442, 1.730000
+Au                  : -2.380177, 1.730000
+B                   : -7.724949, 1.730000
+Ba                  : -4.990944, 1.730000
+Be                  : -4.737147, 1.730000
+Bi                  : -3.438793, 1.730000
+Br                  : -2.518488, 1.730000
+C                   : -8.405596, 1.730000
+Ca                  : -5.390248, 1.730000
+Cd                  : -0.639634, 1.730000
+Ce                  : -8.735393, 1.730000
+Cl                  : -2.811664, 1.730000
+Co                  : -5.577114, 1.730000
+Cr                  : -9.233080, 1.730000
+Cs                  : -2.765277, 1.730000
+Cu                  : -3.251971, 1.730000
+Dy                  : -8.122582, 1.730000
+Er                  : -6.850265, 1.730000
+Eu                  : -13.592787, 1.730000
+F                   : -4.896533, 1.730000
+Fe                  : -7.048877, 1.730000
+Ga                  : -3.527096, 1.730000
+Gd                  : -18.517290, 1.730000
+Ge                  : -4.708508, 1.730000
+H                   : -3.667142, 1.730000
+He                  : -1.322806, 1.730000
+Hf                  : -12.796324, 1.730000
+Hg                  : 0.249461, 1.730000
+Ho                  : -7.607583, 1.730000
+I                   : -1.635614, 1.730000
+In                  : -2.788751, 1.730000
+Ir                  : -7.324546, 1.730000
+K                   : -2.617656, 1.730000
+Kr                  : 6.758303, 1.730000
+La                  : -8.933750, 1.730000
+Li                  : -3.482137, 1.730000
+Lu                  : -7.455310, 1.730000
+Mg                  : -2.812952, 1.730000
+Mn                  : -8.304969, 1.730000
+Mo                  : -8.791601, 1.730000
+N                   : -7.360088, 1.730000
+Na                  : -2.759266, 1.730000
+Nb                  : -12.138863, 1.730000
+Nd                  : -8.251144, 1.730000
+Ne                  : -0.029635, 1.730000
+Ni                  : -5.172706, 1.730000
+Np                  : -14.920345, 1.730000
+O                   : -7.284653, 1.730000
+Os                  : -9.621798, 1.730000
+P                   : -6.963145, 1.730000
+Pa                  : -12.258382, 1.730000
+Pb                  : -3.729877, 1.730000
+Pd                  : -4.890906, 1.730000
+Pm                  : -7.591723, 1.730000
+Pr                  : -8.018864, 1.730000
+Pt                  : -5.304754, 1.730000
+Pu                  : -15.282351, 1.730000
+Rb                  : -2.563460, 1.730000
+Re                  : -11.387536, 1.730000
+Rh                  : -6.849905, 1.730000
+Ru                  : -7.780888, 1.730000
+S                   : -4.672589, 1.730000
+Sb                  : -3.587079, 1.730000
+Sc                  : -7.885749, 1.730000
+Se                  : -3.886271, 1.730000
+Si                  : -7.694902, 1.730000
+Sm                  : -8.169807, 1.730000
+Sn                  : -3.818669, 1.730000
+Sr                  : -4.937633, 1.730000
+Ta                  : -14.108117, 1.730000
+Tb                  : -7.647435, 1.730000
+Tc                  : -8.787148, 1.730000
+Te                  : -2.880421, 1.730000
+Th                  : -11.023438, 1.730000
+Ti                  : -10.268830, 1.730000
+Tl                  : -2.324218, 1.730000
+Tm                  : -7.826887, 1.730000
+U                   : -13.855554, 1.730000
+V                   : -8.665133, 1.730000
+W                   : -9.354835, 1.730000
+Xe                  : 9.843863, 1.730000
+Y                   : -10.149672, 1.730000
+Yb                  : -3.584751, 1.730000
+Zn                  : -1.290225, 1.730000
+Zr                  : -11.846827, 1.730000
+(1st) conv_denominator is: 35.989574
+
+Model building...
+Model building successful
+Irreps of features
+edge_feature        : 1x0e+1x1e+1x2e
+0th node            : 128x0e
+0th TP output       : 128x0e+128x1e+128x2e
+1th node            : 128x0e+64x1e+32x2e
+1th TP output       : 224x0e+384x1e+352x2e
+2th node            : 128x0e+64x1e+32x2e
+2th TP output       : 224x0e+384x1e+352x2e
+3th node            : 128x0e+64x1e+32x2e
+3th TP output       : 224x0e+384x1e+352x2e
+4th node            : 128x0e+64x1e+32x2e
+4th TP output       : 224x0e
+readout irreps      : 128x0e
+Total number of weight: 842623
+
+Trainer initialized, ready to training
+------------------------------------------------------------------------------------------------------------------------
+Calculating Fisher information and optimized parameters for EWC...
+Calculation finished.3749 configurations from trainingset were used.
+Files fisher_sevenn.pt and opt_params_sevenn.pt are generated.
+------------------------------------------------------------------------------------------------------------------------

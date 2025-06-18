@@ -1,0 +1,78 @@
+# Example input.yaml for fine-tuning sevennet-0 with rehearsal
+# '*' signifies default. You can check log.sevenn for defaults.
+#
+model:
+    chemical_species: 'auto'
+    cutoff: 5.0
+    channel: 128
+    is_parity: False
+    lmax: 2
+    num_convolution_layer: 5
+    irreps_manual:
+        - "128x0e"
+        - "128x0e+64x1e+32x2e"
+        - "128x0e+64x1e+32x2e"
+        - "128x0e+64x1e+32x2e"
+        - "128x0e+64x1e+32x2e"
+        - "128x0e"
+
+    weight_nn_hidden_neurons: [64, 64]
+    radial_basis:
+        radial_basis_name: 'bessel'
+        bessel_basis_num: 8
+    cutoff_function:
+        cutoff_function_name: 'XPLOR'
+        cutoff_on: 4.5
+
+    act_gate: {'e': 'silu', 'o': 'tanh'}
+    act_scalar: {'e': 'silu', 'o': 'tanh'}
+
+    train_shift_scale   : False
+    train_denominator : False
+    self_connection_type: 'linear'
+
+train:
+    random_seed: 1
+    is_train_stress: True
+    epoch: 100
+
+    optimizer: 'adam'
+    optim_param:
+        lr: 0.004
+    scheduler: 'exponentiallr'
+    scheduler_param:
+        gamma: 0.99
+
+    force_loss_weight: 0.1
+    stress_loss_weight: 1e-06
+
+    per_epoch: 10
+
+    error_record:
+        - ['Energy', 'RMSE']
+        - ['Force', 'RMSE']
+        - ['Stress', 'RMSE']
+        - ['TotalLoss', 'None']
+
+    continue:
+        reset_optimizer: True
+        reset_scheduler: True
+        reset_epoch: True
+        checkpoint: 'SevenNet-0_11July2024'
+        use_statistic_values_of_checkpoint: True
+
+data:
+    batch_size: 4
+
+    data_format: 'ase'
+    data_format_args:
+        index: ':'
+
+    load_dataset_path:  [ 'fine_tune.extxyz' ]
+    load_validset_path: [ 'valid_set.extxyz' ]
+
+    rehearsal: True  # This part is additional inputs for rehearsal
+    load_memory_path: [ 'memory.extxyz' ]
+    mem_batch_size: 2
+    mem_ratio: 1
+    #change_learning_rate: 0.00123

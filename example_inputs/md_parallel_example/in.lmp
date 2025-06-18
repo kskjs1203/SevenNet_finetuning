@@ -1,0 +1,44 @@
+#--------------------------- Simulation variables -----------------------------#
+
+  # Simulation control parameters.
+  variable          T equal 500
+
+  # Simulation steps (t_eq)
+  variable          t_eq equal 100
+  variable          output equal 1 #freq to print output
+  variable          dumpstep equal 1
+
+#------------------------------------------------------------------------------#
+
+
+#---------------------------- Atomic setup ------------------------------------#
+  units            metal
+  boundary         p p p
+  # Create atoms.
+  box tilt large
+  read_data        ./res.dat
+  replicate 2 2 2
+
+  # Define interatomic potential.
+  pair_style       e3gnn/parallel  # Note that calculated pressure is wrong (it does not include virial part)
+  # The order of element should be the same as the order of elements in the data file (type)
+  # * * {number of deployed parallel models} {path to deployed parallel models} {elements}
+  pair_coeff       * * 4 ./deployed_parallel Hf O
+
+  timestep         0.002
+
+#----------------------------- Run simulation ---------------------------------#
+
+    # Setup output
+    thermo          ${output}
+    thermo_style    custom step tpcpu pe ke vol press temp
+    dump            mydump all custom 1 dump.traj id type x y z fx fy fz
+    dump_modify     mydump sort id
+
+    fix f1 all nve
+    fix               comfix all momentum 1 linear 1 1 1
+    velocity        all create ${T} 1 dist gaussian mom yes
+
+    run 5
+
+#------------------------------------------------------------------------------#

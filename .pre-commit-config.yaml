@@ -1,0 +1,79 @@
+default_language_version:
+  python: python3
+
+fail_fast: false
+
+repos:
+  - repo: meta
+    hooks:
+      - id: check-hooks-apply
+      - id: check-useless-excludes
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-ast
+      - id: check-byte-order-marker
+      - id: check-builtin-literals
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: check-merge-conflict
+      - id: check-vcs-permalinks
+      - id: debug-statements
+      - id: destroyed-symlinks
+      - id: detect-private-key
+      - id: double-quote-string-fixer
+      - id: end-of-file-fixer
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+
+  - repo: https://github.com/asottile/seed-isort-config
+    rev: v2.2.0
+    hooks:
+      - id: seed-isort-config
+
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        exclude: 'sevenn/pair_e3gnn/pair_e3gnn.cpp'
+        exclude: 'sevenn/pair_e3gnn/pair_e3gnn.h'
+        exclude: 'sevenn/pair_e3gnn/pair_e3gnn_parallel.cpp'
+        exclude: 'sevenn/pair_e3gnn/pair_e3gnn_parallel.h'
+        exclude: 'sevenn/pair_e3gnn/comm_brick.h'
+        exclude: 'sevenn/pair_e3gnn/comm_brick.cpp'
+        exclude: 'sevenn/pair_e3gnn/pair_d3.cpp'
+        exclude: 'sevenn/pair_e3gnn/pair_d3.cu'
+        exclude: 'sevenn/pair_e3gnn/pair_d3.h'
+        exclude: 'sevenn/pair_e3gnn/pair_d3_pars.h'
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        exclude: 'sevenn/pair_e3gnn/pair_e3gnn.cpp'
+        exclude: 'sevenn/pair_e3gnn/pair_e3gnn.h'
+        exclude: 'sevenn/pair_e3gnn/pair_e3gnn_parallel.cpp'
+        exclude: 'sevenn/pair_e3gnn/pair_e3gnn_parallel.h'
+        exclude: 'sevenn/pair_e3gnn/comm_brick.h'
+        exclude: 'sevenn/pair_e3gnn/comm_brick.cpp'
+        exclude: 'sevenn/pair_e3gnn/pair_d3.cpp'
+        exclude: 'sevenn/pair_e3gnn/pair_d3.cu'
+        exclude: 'sevenn/pair_e3gnn/pair_d3.h'
+        exclude: 'sevenn/pair_e3gnn/pair_d3_pars.h'
+        exclude: 'sevenn/nn/equivariant_product_basis.py'
+        require_serial: true
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+        stages: [commit, commit-msg]
+        args: ["--ignore-words-list", "Commun"]
+        exclude: 'sevenn/pair_e3gnn/comm_brick.h'
+        exclude: 'sevenn/pair_e3gnn/comm_brick.cpp'
+        exclude: 'sevenn/pair_e3gnn/pair_d3.cu'

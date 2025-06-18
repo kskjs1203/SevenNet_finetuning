@@ -1,0 +1,90 @@
+# Example input.yaml for training SEVENNet.
+# The underlying model is identical to nequip (https://github.com/mir-group/nequip), but the names of hyperparameters might differ.3
+# Except channel, lmax and num_convolution_layer, which has minimal values to quickly check the installation, they normally works well with values written here.
+# Defaults that works well of channel, lmax and num_convolution_layer are 32, 3, 3 respectively.
+model:
+    chemical_species: 'auto'                      # Chemical symbols present in the dataset, guess from load_dataset data if 'auto'
+    cutoff: 5.0                                   # Cutoff radius in Angstroms. If two atoms are within the cutoff, they are connected.
+    channel: 128                                  # Equivalent to 'num_features' in nequip. Represents the multiplicity of node features. 32 is recomanded as default.
+    is_parity: False
+    lmax: 2
+    num_convolution_layer: 5                      # Equivalent to 'num_layers' in nequip. Represents the number of message passing layers in the model. 3 is recomanded as default
+    irreps_manual:
+        - "128x0e"
+        - "128x0e+64x1e+32x2e"
+        - "128x0e+64x1e+32x2e"
+        - "128x0e+64x1e+32x2e"
+        - "128x0e+64x1e+32x2e"
+        - "128x0e"
+
+    weight_nn_hidden_neurons: [64, 64]            # Equivalent to 'invariant_layers' and 'neurons' in nequip. Represents the neural network for the radial basis
+    radial_basis:                                 # Function and its parameters to encode radial distance
+        radial_basis_name: 'bessel'               # Only 'bessel' is currently supported
+        bessel_basis_num: 8                       # Equivalent to 'num_basis' in nequip. Represents the number of Bessel functions as the radial basis
+    cutoff_function:
+        cutoff_function_name: 'XPLOR'
+        cutoff_on: 4.5
+
+    # For even nonlinearities, 'silu', 'abs' (absolute), and 'ssp' (shifted softmax) are supported. Defaults generally work well
+    act_gate: {'e': 'silu', 'o': 'tanh'}          # Equivalent to 'nonlinearity_gates' in nequip.
+    act_scalar: {'e': 'silu', 'o': 'tanh'}        # Equivalent to 'nonlinearity_scalars' in nequip.
+
+    train_shift_scale: True                     # Enable training for shift & scale. Useful if the dataset is augmented
+    train_denominator: True                    # Enable training for avg_num_neigh. Useful if the dataset is augmented
+    self_connection_type: 'linear'
+train:
+    train_shuffle: True
+    random_seed: 1
+    is_train_stress : True # Includes stress in the loss function
+    epoch: 10 # Ends training after this number of epochs
+
+    loss: 'Huber'
+    loss_param:
+        delta: 0.01
+
+    optimizer: 'adam' # Options available are 'sgd', 'adagrad', 'adam', 'adamw', 'radam'
+    optim_param:
+        lr: 0.0
+    scheduler: 'cosineannealingwarmuplr'
+    scheduler_param:
+        first_cycle_steps: 200
+        max_lr: 0.0001
+        min_lr: 0.0
+        warmup_steps: 50
+
+    force_loss_weight : 1.00 # Coefficient for force loss
+    stress_loss_weight: 0.01
+
+    error_record:
+        - ['Energy', 'RMSE']
+        - ['Force', 'RMSE']
+        - ['Stress', 'RMSE']
+        - ['Energy', 'MAE']
+        - ['Force', 'MAE']
+        - ['Stress', 'MAE']
+        - ['Energy', 'Loss']
+        - ['Force', 'Loss']
+        - ['Stress', 'Loss']
+        - ['TotalLoss', 'None']
+
+    per_epoch: 10 # Generate epoch every this number of times
+    continue: 
+        checkpoint: 'SevenNet_0.pth'
+        reset_optimizer: True
+        reset_scheduler: True
+        use_statistic_values_of_checkpoint: True
+        opt_params: '../estimate_Fisher/opt_params_sevenn.pt'
+        fisher_information: '../estimate_Fisher/fisher_sevenn.pt'
+        ewc_lambda: 100000
+
+data:
+    data_shuffle: False
+    batch_size: 8                                # Batch size. If training fails due to memory shortage, lower this value
+
+    load_dataset_path: 'train.sevenn_data'
+    load_validset_path: 'valid.sevenn_data'
+    rehearsal: True
+    load_memory_path: 'replay.sevenn_data'
+    mem_batch_size: 8
+    mem_ratio: 1
+
